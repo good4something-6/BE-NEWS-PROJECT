@@ -64,7 +64,7 @@ describe("GET: /api/topics", () => {
 });
 
 describe("GET /api/articles/:article_id", () => {
-  test("400 article_id provided is not in database", () => {
+  test.skip("400 article_id provided is not in database", () => {
     return request(app)
       .get("/api/articles/999")
       .expect(400)
@@ -72,7 +72,7 @@ describe("GET /api/articles/:article_id", () => {
         expect(result.body.msg).toBe("400 - Invalid Item");
       });
   });
-  test.only("200 valid article_id request returns correct data", () => {
+  test.skip("200 valid article_id request returns correct data", () => {
     let expected = convertTimestampToDate({
       title: "Living in the shadow of a great man",
       topic: "mitch",
