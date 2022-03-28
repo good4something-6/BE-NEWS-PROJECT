@@ -1,4 +1,10 @@
-const { getTopics, invalidEndPoint } = require("./controllers/topics.controllers");
+const {
+  getTopics,
+  invalidEndPoint,
+  getArticleById,
+} = require("./controllers/topics.controllers");
+
+const {htmlErrorCodes} = require('./error-handling');
 
 const express = require("express");
 
@@ -8,12 +14,11 @@ app.use(express.json());
 
 app.get("/api/topics", getTopics);
 
+app.get("/api/articles/:article_id", getArticleById);
+
 app.get("/*", invalidEndPoint);
 
-app.use((err, req, res, next) => {
-  //console.log("ERROR",err);
-  res.status(404).send({ msg: "404 - path not found" });
-});
+app.use(htmlErrorCodes);
 
 app.use((err, req, res, next) => {
   console.log("DEFAULT ERROR", err);

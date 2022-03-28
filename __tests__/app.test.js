@@ -1,6 +1,7 @@
 const request = require("supertest");
 const { app } = require("../app");
 const db = require("../db/connection");
+const { convertTimestampToDate } = require("../db/helpers/utils");
 
 const seed = require("../db/seeds/seed");
 
@@ -49,8 +50,6 @@ describe("GET: /api/topics", () => {
       .get("/api/topics")
       .expect(200)
       .then((results) => {
-        console.log("model results");
-        console.table(results.body);
         expect(results.body).toEqual(testTopics);
       });
   });
@@ -58,9 +57,38 @@ describe("GET: /api/topics", () => {
     return request(app)
       .get("/api/topicsINVALID")
       .expect(404)
-      .then((results)=>{
-          console.log("HERE",results.status);
+      .then((result) => {
+        expect(result.body.msg).toBe("404 - path not found");
       });
   });
+});
 
+describe("GET /api/articles/:article_id", () => {
+  test("400 article_id provided is not in database", () => {
+    return request(app)
+      .get("/api/articles/999")
+      .expect(400)
+      .then((result) => {
+        expect(result.body.msg).toBe("400 - Invalid Item");
+      });
+  });
+  test.only("200 valid article_id request returns correct data", () => {
+    let expected = convertTimestampToDate({
+      title: "Living in the shadow of a great man",
+      topic: "mitch",
+      author: "butter_bridge",
+      body: "I find this existence challenging",
+      created_at: 1594329060000,
+      votes: 100,
+      article_id: 1,
+    });
+    return request(app)
+      .get("/api/articles/1")
+      .expect(200)
+      .then((result) => {
+        console.log("TEST is instance of DATE", expected.created_at instanceof Date, expected.created_at);
+        console.log("TEST2 typeof is String  ", typeof result.body.created_at, result.body.created_at);
+        expect(result.body).toEqual(expected);
+      });
+  });
 });
