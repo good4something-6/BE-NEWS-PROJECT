@@ -6,13 +6,11 @@ We will be building an API for the purpose of accessing application data program
 
 The database will be PSQL, and you will interact with it using [node-postgres](https://node-postgres.com/).
 
-
-
 ## Configuration
 
 ### Access to test and development databases
 
-Two databases are included:  test and development
+Two databases are included: test and development
 To connect to these the environment variable PGDATABASE needs to be configured with the code files prior to running the code.
 Or the environment variable NODE_ENV needs to be configured when launching the code
 
@@ -33,18 +31,17 @@ PGDATABASE=nc_news_test;
 ```
 
 The NODE_ENV environment variable is used for database creation and seeding from scratch using the following command lines:
-    
-````bash
+
+```bash
 --------------------
 Development database
 --------------------
-    npm setup-dbs && npm seed
-````
+    npm run setup-dbs && npm run seed
+```
 
-````bash
+```bash
 -------------
 Test database
 -------------
-    npm setup-dbs && NODE_DEV=test npm seed
-````
-
+    npm run setup-dbs && NODE_DEV='test' npm run seed
+```
