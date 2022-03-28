@@ -14,7 +14,7 @@ The database will be PSQL, and you will interact with it using [node-postgres](h
 
 Two databases are included:  test and development
 To connect to these the environment variable PGDATABASE needs to be configured with the code files prior to running the code.
-Or the environment variable NODE_ENV needs to be configured when launching the code.
+Or the environment variable NODE_ENV needs to be configured when launching the code
 
 The PGDATABASE configuration is available through .env files which are not included in the project and need to be created.
 
@@ -47,3 +47,4 @@ Test database
 -------------
     npm setup-dbs && NODE_DEV=test npm seed
 ````
+
