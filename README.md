@@ -16,7 +16,7 @@ Two databases are included:  test and development
 To connect to these the environment variable PGDATABASE needs to be configured with the code files prior to running the code.
 Or the environment variable NODE_ENV needs to be configured when launching the code.
 
-The PGDATABASE configuration is available through .env files which are not included in the project and need to be created
+The PGDATABASE configuration is available through .env files which are not included in the project and need to be created.
 
 ```text
 ----------------
