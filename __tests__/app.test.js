@@ -58,7 +58,7 @@ describe("GET: /api/topics", () => {
       .get("/api/topicsINVALID")
       .expect(404)
       .then((result) => {
-        expect(result.body.msg).toBe("404 - path not found");
+        expect(result.body.msg).toBe("Invalid end point");
       });
   });
 });
@@ -67,45 +67,16 @@ describe("GET /api/articles/:article_id", () => {
   test("400 article_id provided is not in database", () => {
     return request(app)
       .get("/api/articles/999")
-      .expect(400)
+      .expect(404)
       .then((result) => {
-        expect(result.body.msg).toBe("400 - Invalid Item");
+        expect(result.body.msg).toBe("Article Not Found");
       });
   });
   test("200 valid article_id request returns correct data", () => {
-    //COMPARING THE EXACT VALUES IN THE TEST RAISES A DISCREPANCY ON TIMESTAMPS
-    //THE DATA EXTRACTED FROM THE SERVER IS ONE HOUR DIFFERENT TO THAT ON THE EXPECTED DATA
-    //PSQL SHOWS THE SAME AS THE EXPECTED DATA
-    //SO COMMENTED OUT LINES (FOR FUTURE REFERENCE AND INVESTIGATION) AND CHANGED THE TEST TO A MORE BASIC TEST
-    //
-    // let expected = {
-    //   title: "Living in the shadow of a great man",
-    //   topic: "mitch",
-    //   author: "butter_bridge",
-    //   body: "I find this existence challenging",
-    //   created_at: 1594329060000,
-    //   votes: 100,
-    //   article_id: 1,
-    // };
-
-    // console.log("TEST DATE>>>", new Date(  Date.now()  ) .toString()  );
-    // console.log("TEST DATE2>>>", new Date(  Date.now()  )  );
-
     return request(app)
       .get("/api/articles/1")
       .expect(200)
       .then((result) => {
-        // console.log(
-        //   "TEST is instance of DATE",
-        //   expected.created_at instanceof Date,
-        //   convertTimestampToDate(expected).created_at.toString()
-        // );
-        // console.log(
-        //   "TEST2 typeof is String  ",
-        //   typeof result.body.created_at,
-        //   new Date(result.body.created_at).toString()
-        // );
-        // expect(result.body).toEqual(expected);
         expect(result.body).toHaveProperty("title");
         expect(result.body).toHaveProperty("topic");
         expect(result.body).toHaveProperty("author");
@@ -117,15 +88,6 @@ describe("GET /api/articles/:article_id", () => {
   });
 });
 
-// Request body accepts:
-//     an object in the form { inc_votes: newVote }
-//         newVote will indicate how much the votes property in the database should be updated by
-//     e.g.
-//     { inc_votes : 1 } would increment the current article's vote property by 1
-//     { inc_votes : -100 } would decrement the current article's vote property by 100
-// Responds with:
-//     the updated article
-
 describe("PATCH /api/articles/:article_id", () => {
   test("404 - article id is not in database", () => {
     return request(app)
@@ -133,7 +95,34 @@ describe("PATCH /api/articles/:article_id", () => {
       .send({ inc_votes: 1 })
       .expect(404)
       .then((result) => {
-        expect(result.body.msg).toBe("404 - Invalid Request");
+        expect(result.body.msg).toBe("Article Not Found");
+      });
+  });
+  test("400 - article id is not correct data type", () => {
+    return request(app)
+      .patch("/api/articles/INVALID")
+      .send({ inc_votes: 1 })
+      .expect(400)
+      .then((result) => {
+        expect(result.body.msg).toBe("400 - Invalid Request");
+      });
+  });
+  test.only("400 - request body contains values not of correct data type", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: "INVALID" })
+      .expect(400)
+      .then((result) => {
+        expect(result.body.msg).toBe("400 - Invalid Request");
+      });
+  });
+  test.only("400 - request body does not contains correct key", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ not_correct_key: 1 })
+      .expect(400)
+      .then((result) => {
+        expect(result.body.msg).toBe("400 - Invalid Request");
       });
   });
   test("200 - valid article id is provided and votes updates by 1 correctly", () => {

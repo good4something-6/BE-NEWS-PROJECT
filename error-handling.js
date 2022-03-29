@@ -1,17 +1,20 @@
 exports.htmlErrorCodes = (err, req, res, next) => {
-  // console.log("ERROR", err);
-  switch (err) {
-    case "Invalid Item":
-      res.status(400).send({ msg: "400 - Invalid Item" });
-      break;
-
-    case "Invalid article ID":
-      res.status(404).send({ msg: "404 - Invalid Request" });
-
-    default:
-      res.status(404).send({ msg: "404 - path not found" });
-      break;
+  if (err.status) {
+    res.status(err.status).send({ msg: err.msg });
+  } else {
+    next(err);
   }
+};
 
-  
+exports.sqlErrorCodes = (err, req, res, next) => {
+  switch (err.code) {
+    case "22P02":
+      res.status(400).send({ msg: "400 - Invalid Request" });
+      break;
+    case "23502":
+      res.status(400).send({ msg: "400 - Invalid Request" });
+      break;
+    default:
+      next(err);
+  }
 };
