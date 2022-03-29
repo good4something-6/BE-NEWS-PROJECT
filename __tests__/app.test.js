@@ -64,7 +64,7 @@ describe("GET: /api/topics", () => {
 });
 
 describe("GET /api/articles/:article_id", () => {
-  test("400 article_id provided is not in database", () => {
+  test("404 article_id provided is not in database", () => {
     return request(app)
       .get("/api/articles/999")
       .expect(404)
