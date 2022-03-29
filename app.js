@@ -4,7 +4,7 @@ const {
   getArticleById,
 } = require("./controllers/topics.controllers");
 
-const {htmlErrorCodes} = require('./error-handling');
+const { htmlErrorCodes } = require("./error-handling");
 
 const express = require("express");
 
@@ -16,7 +16,10 @@ app.get("/api/topics", getTopics);
 
 app.get("/api/articles/:article_id", getArticleById);
 
-app.get("/*", invalidEndPoint);
+app.all("/*", (req, res, next) => {
+    let err = new Error("Invalid end point");
+    next(err);
+  });
 
 app.use(htmlErrorCodes);
 

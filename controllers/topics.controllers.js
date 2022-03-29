@@ -1,10 +1,5 @@
 const { pullTopics, pullArticleById } = require("../models/topics.models");
 
-exports.invalidEndPoint = (req, res, next) => {
-  let err = new Error("Invalid end point");
-  next(err);
-};
-
 exports.getTopics = (req, res, next) => {
   pullTopics()
     .then((result) => {
