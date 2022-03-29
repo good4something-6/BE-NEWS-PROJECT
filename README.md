@@ -30,6 +30,8 @@ PGDATABASE=nc_news;
 PGDATABASE=nc_news_test;
 ```
 
+### Creating and populating test and development databases
+
 The (empty) databases are created from scratch by running the npm script as follows: 'npm run setup-dbs' (see package.json scripts section)
 
 The test database is populated either manually or as part of the jest testing process
