@@ -1,8 +1,11 @@
 const {
   getTopics,
+} = require("./controllers/topics.controllers");
+
+const {
   getArticleById,
   patchArticleId,
-} = require("./controllers/topics.controllers");
+} = require("./controllers/article.controllers");
 
 const { htmlErrorCodes } = require("./error-handling");
 
@@ -26,7 +29,7 @@ app.all("/*", (req, res, next) => {
 app.use(htmlErrorCodes);
 
 app.use((err, req, res, next) => {
-  console.log("DEFAULT ERROR", err);
+  //console.log("DEFAULT ERROR", err);
   res.status(500).send({ msg: "internal server error" });
 });
 

@@ -127,26 +127,29 @@ describe("GET /api/articles/:article_id", () => {
 //     the updated article
 
 describe("PATCH /api/articles/:article_id", () => {
-  test("article id is not in database", () => {
+  test("404 - article id is not in database", () => {
     return request(app)
       .patch("/api/articles/99999")
       .send({ inc_votes: 1 })
+      .expect(404)
       .then((result) => {
         expect(result.body.msg).toBe("404 - Invalid Request");
       });
   });
-  test("valid article id is provided and votes updates by 1 correctly", () => {
+  test("200 - valid article id is provided and votes updates by 1 correctly", () => {
     return request(app)
       .patch("/api/articles/1")
       .send({ inc_votes: 1 })
+      .expect(201)
       .then((result) => {
         expect(result.body.votes).toBe(101);
       });
   });
-  test("valid article id is provided and votes updates by 100 correctly", () => {
+  test("200 - valid article id is provided and votes updates by 100 correctly", () => {
     return request(app)
       .patch("/api/articles/1")
       .send({ inc_votes: 100 })
+      .expect(201)
       .then((result) => {
         expect(result.body.votes).toBe(200);
       });
