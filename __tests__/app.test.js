@@ -1,7 +1,7 @@
 const request = require("supertest");
 const { app } = require("../app");
 const db = require("../db/connection");
-const { convertTimestampToDate } = require("../db/helpers/utils");
+//const { convertTimestampToDate } = require("../db/helpers/utils");
 
 const seed = require("../db/seeds/seed");
 
@@ -63,17 +63,24 @@ describe("GET: /api/topics", () => {
   });
 });
 
-describe("GET /api/articles/:article_id", () => {
+describe.only("GET /api/articles/:article_id", () => {
   test("400 article_id provided is not in database", () => {
     return request(app)
       .get("/api/articles/999")
+      .expect(404)
+      .then((result) => {
+        expect(result.body.msg).toBe("404 - Invalid Item");
+      });
+  });
+  test("400 article_id provided is not valid", () => {
+    return request(app)
+      .get("/api/articles/INVALID")
       .expect(400)
       .then((result) => {
-        expect(result.body.msg).toBe("400 - Invalid Item");
+        expect(result.body.msg).toBe("400 - Invalid Request");
       });
   });
   test("200 valid article_id request returns correct data", () => {
-
     //COMPARING THE EXACT VALUES IN THE TEST RAISES A DISCREPANCY ON TIMESTAMPS
     //THE DATA EXTRACTED FROM THE SERVER IS ONE HOUR DIFFERENT TO THAT ON THE EXPECTED DATA
     //PSQL SHOWS THE SAME AS THE EXPECTED DATA
@@ -107,13 +114,16 @@ describe("GET /api/articles/:article_id", () => {
         //   new Date(result.body.created_at).toString()
         // );
         // expect(result.body).toEqual(expected);
-        expect(result.body).toHaveProperty("title");
-        expect(result.body).toHaveProperty("topic");
-        expect(result.body).toHaveProperty("author");
-        expect(result.body).toHaveProperty("body");
-        expect(result.body).toHaveProperty("created_at");
-        expect(result.body).toHaveProperty("votes");
-        expect(result.body).toHaveProperty("article_id");
+
+        expect(result.body).toMatchObject({
+          title: "Living in the shadow of a great man",
+          topic: "mitch",
+          author: "butter_bridge",
+          body: "I find this existence challenging",
+          created_at: expect.any(String),
+          votes: 100,
+          article_id: 1,
+        });
       });
   });
 });
