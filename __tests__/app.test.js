@@ -73,7 +73,6 @@ describe("GET /api/articles/:article_id", () => {
       });
   });
   test("200 valid article_id request returns correct data", () => {
-
     //COMPARING THE EXACT VALUES IN THE TEST RAISES A DISCREPANCY ON TIMESTAMPS
     //THE DATA EXTRACTED FROM THE SERVER IS ONE HOUR DIFFERENT TO THAT ON THE EXPECTED DATA
     //PSQL SHOWS THE SAME AS THE EXPECTED DATA
@@ -114,6 +113,42 @@ describe("GET /api/articles/:article_id", () => {
         expect(result.body).toHaveProperty("created_at");
         expect(result.body).toHaveProperty("votes");
         expect(result.body).toHaveProperty("article_id");
+      });
+  });
+});
+
+// Request body accepts:
+//     an object in the form { inc_votes: newVote }
+//         newVote will indicate how much the votes property in the database should be updated by
+//     e.g.
+//     { inc_votes : 1 } would increment the current article's vote property by 1
+//     { inc_votes : -100 } would decrement the current article's vote property by 100
+// Responds with:
+//     the updated article
+
+describe("PATCH /api/articles/:article_id", () => {
+  test("article id is not in database", () => {
+    return request(app)
+      .patch("/api/articles/99999")
+      .send({ inc_votes: 1 })
+      .then((result) => {
+        expect(result.body.msg).toBe("404 - Invalid Request");
+      });
+  });
+  test("valid article id is provided and votes updates by 1 correctly", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: 1 })
+      .then((result) => {
+        expect(result.body.votes).toBe(101);
+      });
+  });
+  test("valid article id is provided and votes updates by 100 correctly", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: 100 })
+      .then((result) => {
+        expect(result.body.votes).toBe(200);
       });
   });
 });
