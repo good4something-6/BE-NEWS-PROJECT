@@ -171,10 +171,6 @@ describe("Articles", () => {
     });
     test("204 article_id is valid and no comments exist", () => {
       return request(app).get("/api/articles/2/comments").expect(204);
-      // .then((result) => {
-      //   console.log("TEST2", result.body);
-      //   expect(result.body.msg).toBe("204 - No comments available");
-      // });
     });
 
     test("404 article_id provided is not in database", () => {
