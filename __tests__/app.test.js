@@ -193,6 +193,7 @@ describe("Articles", () => {
           expect(result.body.msg).toBe("400 - Invalid Request");
         });
     });
+    /////getArticleComments
     // test.only("200 article_id is valid", () => {
     //   return request(app)
     //     .get("/api/articles/5/comments")
