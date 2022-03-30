@@ -1,11 +1,9 @@
 exports.htmlErrorCodes = (err, req, res, next) => {
-  switch (err) {
-    case "Invalid Item":
-      res.status(404).send({ msg: "404 - Invalid Item" });
-      break;
+  if (err.status) {
+    res.status(err.status).send({ msg: err.msg });
+  } else {
+    next(err);
   }
-
-  next(err);
 };
 
 exports.sqlErrorCodes = (err, req, res, next) => {
@@ -13,7 +11,10 @@ exports.sqlErrorCodes = (err, req, res, next) => {
     case "22P02":
       res.status(400).send({ msg: "400 - Invalid Request" });
       break;
+    case "23502":
+      res.status(400).send({ msg: "400 - Invalid Request" });
+      break;
+    default:
+      next(err);
   }
-
-  next(err);
 };

@@ -1,8 +1,9 @@
+const { getTopics } = require("./controllers/topics.controllers");
+
 const {
-  getTopics,
-  invalidEndPoint,
   getArticleById,
-} = require("./controllers/topics.controllers");
+  patchArticleId,
+} = require("./controllers/article.controllers");
 
 const { htmlErrorCodes, sqlErrorCodes } = require("./error-handling");
 
@@ -16,9 +17,10 @@ app.get("/api/topics", getTopics);
 
 app.get("/api/articles/:article_id", getArticleById);
 
+app.patch("/api/articles/:article_id", patchArticleId);
+
 app.all("/*", (req, res, next) => {
-  let err = new Error("Invalid end point");
-  next(err);
+  res.status(404).send({ msg: "Invalid end point" });
 });
 
 app.use(htmlErrorCodes);
@@ -26,7 +28,6 @@ app.use(htmlErrorCodes);
 app.use(sqlErrorCodes);
 
 app.use((err, req, res, next) => {
-  console.log("DEFAULT ERROR", err);
   res.status(500).send({ msg: "internal server error" });
 });
 

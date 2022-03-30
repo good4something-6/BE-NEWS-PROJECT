@@ -1,4 +1,4 @@
-const { pullTopics, pullArticleById } = require("../models/topics.models");
+const { pullTopics } = require("../models/topics.models");
 
 exports.getTopics = (req, res, next) => {
   pullTopics()
