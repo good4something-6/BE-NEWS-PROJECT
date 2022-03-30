@@ -4,6 +4,8 @@ const {
   pullArticlesWithCommentCount,
 } = require("../models/articles.model");
 
+const { convertTimestampToDate } = require("../db/helpers/utils.js");
+
 exports.getArticleById = (req, res, next) => {
   const { article_id } = req.params;
   pullArticleById(article_id)
@@ -29,8 +31,8 @@ exports.patchArticleId = (req, res, next) => {
 
 exports.getArticlesWithCommentCount = (req, res, next) => {
   pullArticlesWithCommentCount()
-    .then((result) => {
-      res.status(200).send(result);
+    .then((results) => {
+      res.status(200).send(results);
     })
     .catch(next);
 };

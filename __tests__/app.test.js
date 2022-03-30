@@ -148,7 +148,7 @@ describe("Articles", () => {
   });
 
   describe("GET /api/articles with comment count", () => {
-    test("200 - returns array of articles objects", () => {
+    test("200 - returns array of articles objects in descending date order", () => {
       return request(app)
         .get("/api/articles")
         .expect(200)
@@ -156,7 +156,10 @@ describe("Articles", () => {
           const articles = result.body;
           expect(Array.isArray(articles)).toBe(true);
           expect(articles).toHaveLength(12);
+          let dateStringToCompareWith = "INITIAL STRING FOR COMPARING DATES";
           articles.forEach((article) => {
+            expect(article.created_at <= dateStringToCompareWith).toBe(true);
+            dateStringToCompareWith = article.created_at;
             expect(article).toEqual(
               expect.objectContaining({
                 author: expect.any(String),
