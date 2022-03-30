@@ -5,7 +5,7 @@ exports.pullArticleById = (article_id) => {
     .query(`SELECT * FROM articles WHERE article_id = $1;`, [article_id])
     .then((result) => {
       if (!result.rows.length) {
-        return Promise.reject({ status: 404, msg: "Article Not Found" });
+        return Promise.reject({ status: 404, msg: "404 - Article Not Found" });
       } else {
         return result.rows[0];
       }
@@ -24,7 +24,7 @@ exports.updateArticleId = (article_id, body) => {
     )
     .then((result) => {
       if (!result.rows.length) {
-        return Promise.reject({ status: 404, msg: "Article Not Found" });
+        return Promise.reject({ status: 404, msg: "404 - Article Not Found" });
       } else {
         return result.rows[0];
       }
@@ -57,5 +57,26 @@ exports.pullArticlesWithCommentCount = () => {
     )
     .then((result) => {
       return result.rows;
+    });
+};
+
+exports.pullArticleComments = (article_id) => {
+  return db
+    .query(
+      `
+    SELECT article_id FROM articles WHERE article_id=$1
+    `,
+      [article_id]
+    )
+    .then((results) => {
+      if (!results.rows.length) {
+        return Promise.reject({
+          status: 404,
+          msg: "404 - Article Not Found",
+        });
+      } else {
+        console.table(results.rows);
+        return results.rows;
+      }
     });
 };

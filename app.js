@@ -4,6 +4,7 @@ const {
   getArticleById,
   patchArticleId,
   getArticlesWithCommentCount,
+  getArticleComments,
 } = require("./controllers/article.controllers");
 
 const { getAllUsers } = require("./controllers/users.controllers");
@@ -18,6 +19,8 @@ app.use(express.json());
 
 app.get("/api/topics", getTopics);
 
+app.get("/api/articles/:article_id/comments", getArticleComments);
+
 app.get("/api/articles/:article_id", getArticleById);
 
 app.patch("/api/articles/:article_id", patchArticleId);
@@ -27,7 +30,7 @@ app.get("/api/users", getAllUsers);
 app.get("/api/articles", getArticlesWithCommentCount);
 
 app.all("/*", (req, res, next) => {
-  res.status(404).send({ msg: "Invalid end point" });
+  res.status(404).send({ msg: "404 - Invalid end point" });
 });
 
 app.use(htmlErrorCodes);

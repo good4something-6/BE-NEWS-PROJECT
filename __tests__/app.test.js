@@ -58,7 +58,7 @@ describe("Topics", () => {
         .get("/api/topicsINVALID")
         .expect(404)
         .then((result) => {
-          expect(result.body.msg).toBe("Invalid end point");
+          expect(result.body.msg).toBe("404 - Invalid end point");
         });
     });
   });
@@ -71,7 +71,7 @@ describe("Articles", () => {
         .get("/api/articles/999")
         .expect(404)
         .then((result) => {
-          expect(result.body.msg).toBe("Article Not Found");
+          expect(result.body.msg).toBe("404 - Article Not Found");
         });
     });
     test("200 valid article_id request returns correct data", () => {
@@ -97,7 +97,7 @@ describe("Articles", () => {
         .send({ inc_votes: 1 })
         .expect(404)
         .then((result) => {
-          expect(result.body.msg).toBe("Article Not Found");
+          expect(result.body.msg).toBe("404 - Article Not Found");
         });
     });
     test("400 - article id is not correct data type", () => {
@@ -174,6 +174,39 @@ describe("Articles", () => {
           });
         });
     });
+  });
+
+  describe("GET /api/articles/:article_id/comments", () => {
+    test("404 article_id provided is not in database", () => {
+      return request(app)
+        .get("/api/articles/999/comments")
+        .expect(404)
+        .then((result) => {
+          expect(result.body.msg).toBe("404 - Article Not Found");
+        });
+    });
+    test("404 article_id provided is not valid type", () => {
+      return request(app)
+        .get("/api/articles/INVALID/comments")
+        .expect(400)
+        .then((result) => {
+          expect(result.body.msg).toBe("400 - Invalid Request");
+        });
+    });
+    // test.only("200 article_id is valid", () => {
+    //   return request(app)
+    //     .get("/api/articles/5/comments")
+    //     .expect(200)
+    //     .then((result) => {
+
+    //       expect(Array.isArray(articles)).toBe(true);
+    //       expect(articles).toHaveLength(12);
+
+    // comment_id
+    // votes
+    // created_at
+    // author which is the username from the users table
+    // body
   });
 });
 
