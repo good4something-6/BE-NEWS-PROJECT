@@ -1,3 +1,6 @@
+const { describe, expect } = require("@jest/globals");
+const { test, beforeEach, afterAll } = require("@jest/globals");
+
 const request = require("supertest");
 const { app } = require("../app");
 const db = require("../db/connection");
@@ -5,7 +8,6 @@ const db = require("../db/connection");
 const seed = require("../db/seeds/seed");
 
 const testData = require("../db/data/test-data/index");
-const res = require("express/lib/response");
 
 beforeEach(() => {
   return seed(testData);
@@ -91,15 +93,6 @@ describe("Articles", () => {
   });
 
   describe("PATCH /api/articles/:article_id", () => {
-    test("404 - article id is not in database", () => {
-      return request(app)
-        .patch("/api/articles/99999")
-        .send({ inc_votes: 1 })
-        .expect(404)
-        .then((result) => {
-          expect(result.body.msg).toBe("404 - Article Not Found");
-        });
-    });
     test("400 - article id is not correct data type", () => {
       return request(app)
         .patch("/api/articles/INVALID")
@@ -145,6 +138,61 @@ describe("Articles", () => {
           expect(result.body.votes).toBe(200);
         });
     });
+    test("404 - article id is not in database", () => {
+      return request(app)
+        .patch("/api/articles/99999")
+        .send({ inc_votes: 1 })
+        .expect(404)
+        .then((result) => {
+          expect(result.body.msg).toBe("404 - Article Not Found");
+        });
+    });
+  });
+
+  describe("GET /api/articles/:article_id/comments", () => {
+    test("200 article_id is valid and comments exist", () => {
+      return request(app)
+        .get("/api/articles/5/comments")
+        .expect(200)
+        .then((result) => {
+          let commentsArr = result.body;
+          expect(Array.isArray(commentsArr)).toBe(true);
+          expect(commentsArr).toHaveLength(2);
+          commentsArr.forEach((comment) => {
+            expect(comment).toMatchObject({
+              comment_id: expect.any(Number),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+            });
+          });
+        });
+    });
+    test("204 article_id is valid and no comments exist", () => {
+      return request(app).get("/api/articles/2/comments").expect(204);
+      // .then((result) => {
+      //   console.log("TEST2", result.body);
+      //   expect(result.body.msg).toBe("204 - No comments available");
+      // });
+    });
+
+    test("404 article_id provided is not in database", () => {
+      return request(app)
+        .get("/api/articles/999/comments")
+        .expect(404)
+        .then((result) => {
+          expect(result.body.msg).toBe("404 - Article Not Found");
+        });
+    });
+    test("404 article_id provided is not valid type", () => {
+      return request(app)
+        .get("/api/articles/INVALID/comments")
+        .expect(400)
+        .then((result) => {
+          expect(result.body.msg).toBe("400 - Invalid Request");
+        });
+    });
   });
 
   describe("GET /api/articles with comment count", () => {
@@ -174,40 +222,6 @@ describe("Articles", () => {
           });
         });
     });
-  });
-
-  describe("GET /api/articles/:article_id/comments", () => {
-    test("404 article_id provided is not in database", () => {
-      return request(app)
-        .get("/api/articles/999/comments")
-        .expect(404)
-        .then((result) => {
-          expect(result.body.msg).toBe("404 - Article Not Found");
-        });
-    });
-    test("404 article_id provided is not valid type", () => {
-      return request(app)
-        .get("/api/articles/INVALID/comments")
-        .expect(400)
-        .then((result) => {
-          expect(result.body.msg).toBe("400 - Invalid Request");
-        });
-    });
-    /////getArticleComments
-    // test.only("200 article_id is valid", () => {
-    //   return request(app)
-    //     .get("/api/articles/5/comments")
-    //     .expect(200)
-    //     .then((result) => {
-
-    //       expect(Array.isArray(articles)).toBe(true);
-    //       expect(articles).toHaveLength(12);
-
-    // comment_id
-    // votes
-    // created_at
-    // author which is the username from the users table
-    // body
   });
 });
 
