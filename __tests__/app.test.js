@@ -1,11 +1,11 @@
 const request = require("supertest");
 const { app } = require("../app");
 const db = require("../db/connection");
-//const { convertTimestampToDate } = require("../db/helpers/utils");
 
 const seed = require("../db/seeds/seed");
 
 const testData = require("../db/data/test-data/index");
+const res = require("express/lib/response");
 
 beforeEach(() => {
   return seed(testData);
@@ -21,7 +21,7 @@ describe("Dummy test", () => {
   });
 });
 
-describe("", () => {
+describe("Topics", () => {
   describe("GET: /api/topics", () => {
     const testTopics = [
       {
@@ -146,26 +146,48 @@ describe("Articles", () => {
         });
     });
   });
-});
 
-describe("Users", () => {
-  describe("GET /api/users", () => {
-    test("200 - returns all users", () => {
+  describe("GET /api/articles with comment count", () => {
+    test("200 - returns array of articles objects", () => {
       return request(app)
-        .get("/api/users")
+        .get("/api/articles")
         .expect(200)
         .then((result) => {
-          const users = result.body;
-          expect(Array.isArray(users)).toBe(true);
-          expect(users).toHaveLength(4);
-          users.forEach((user) => {
-            expect(user).toEqual(
+          const articles = result.body;
+          expect(Array.isArray(articles)).toBe(true);
+          expect(articles).toHaveLength(12);
+          articles.forEach((article) => {
+            expect(article).toEqual(
               expect.objectContaining({
-                username: expect.any(String),
+                author: expect.any(String),
+                title: expect.any(String),
+                article_id: expect.any(Number),
+                topic: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                count: expect.any(Number),
               })
             );
           });
         });
+    });
+  });
+});
+
+describe("Users", () => {
+  describe("GET /api/users", () => {
+    test("200 - returns all users", async () => {
+      const result = await request(app).get("/api/users").expect(200);
+      const users = result.body;
+      expect(Array.isArray(users)).toBe(true);
+      expect(users).toHaveLength(4);
+      users.forEach((user) => {
+        expect(user).toEqual(
+          expect.objectContaining({
+            username: expect.any(String),
+          })
+        );
+      });
     });
   });
 });

@@ -3,6 +3,7 @@ const { getTopics } = require("./controllers/topics.controllers");
 const {
   getArticleById,
   patchArticleId,
+  getArticlesWithCommentCount,
 } = require("./controllers/article.controllers");
 
 const { getAllUsers } = require("./controllers/users.controllers");
@@ -22,6 +23,8 @@ app.get("/api/articles/:article_id", getArticleById);
 app.patch("/api/articles/:article_id", patchArticleId);
 
 app.get("/api/users", getAllUsers);
+
+app.get("/api/articles", getArticlesWithCommentCount);
 
 app.all("/*", (req, res, next) => {
   res.status(404).send({ msg: "Invalid end point" });

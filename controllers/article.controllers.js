@@ -1,6 +1,7 @@
 const {
   pullArticleById,
   updateArticleId,
+  pullArticlesWithCommentCount,
 } = require("../models/articles.model");
 
 exports.getArticleById = (req, res, next) => {
@@ -24,4 +25,12 @@ exports.patchArticleId = (req, res, next) => {
     .catch((err) => {
       next(err);
     });
+};
+
+exports.getArticlesWithCommentCount = (req, res, next) => {
+  pullArticlesWithCommentCount()
+    .then((result) => {
+      res.status(200).send(result);
+    })
+    .catch(next);
 };

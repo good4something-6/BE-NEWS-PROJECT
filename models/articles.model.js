@@ -30,3 +30,32 @@ exports.updateArticleId = (article_id, body) => {
       }
     });
 };
+
+exports.pullArticlesWithCommentCount = () => {
+  return db
+    .query(
+      `
+    SELECT 
+    "articles"."author", 
+    "articles"."title", 
+    "articles"."article_id", 
+    "articles"."topic", 
+    "articles"."created_at", 
+    "articles"."votes", 
+    CAST(COUNT( "comments"."article_id" ) AS INT)
+    FROM "articles" LEFT JOIN "comments" 
+    ON "comments"."article_id" = "articles"."article_id" 
+    GROUP BY 
+    "articles"."author", 
+    "articles"."title", 
+    "articles"."article_id", 
+    "articles"."topic", 
+    "articles"."created_at", 
+    "articles"."votes"
+    `
+    )
+    .then((result) => {
+      console.log(result.rows);
+      return result.rows;
+    });
+};
