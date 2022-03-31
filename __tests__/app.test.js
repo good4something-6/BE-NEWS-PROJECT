@@ -1,5 +1,4 @@
 const request = require("supertest");
-require("jest-sorted");
 const { app } = require("../app");
 const db = require("../db/connection");
 
@@ -91,6 +90,24 @@ describe("Articles", () => {
   });
 
   describe("PATCH /api/articles/:article_id", () => {
+    test("200 - valid article id is provided and votes updates by 1 correctly", () => {
+      return request(app)
+        .patch("/api/articles/1")
+        .send({ inc_votes: 1 })
+        .expect(201)
+        .then((result) => {
+          expect(result.body.votes).toBe(101);
+        });
+    });
+    test("200 - valid article id is provided and votes updates by 100 correctly", () => {
+      return request(app)
+        .patch("/api/articles/1")
+        .send({ inc_votes: 100 })
+        .expect(201)
+        .then((result) => {
+          expect(result.body.votes).toBe(200);
+        });
+    });
     test("400 - article id is not correct data type", () => {
       return request(app)
         .patch("/api/articles/INVALID")
@@ -127,24 +144,6 @@ describe("Articles", () => {
           expect(result.body.msg).toBe("404 - Article Not Found");
         });
     });
-    test("200 - valid article id is provided and votes updates by 1 correctly", () => {
-      return request(app)
-        .patch("/api/articles/1")
-        .send({ inc_votes: 1 })
-        .expect(201)
-        .then((result) => {
-          expect(result.body.votes).toBe(101);
-        });
-    });
-    test("200 - valid article id is provided and votes updates by 100 correctly", () => {
-      return request(app)
-        .patch("/api/articles/1")
-        .send({ inc_votes: 100 })
-        .expect(201)
-        .then((result) => {
-          expect(result.body.votes).toBe(200);
-        });
-    });
   });
 
   describe("GET /api/articles/:article_id/comments", () => {
@@ -167,8 +166,8 @@ describe("Articles", () => {
           });
         });
     });
-    test("204 article_id is valid and no comments exist", () => {
-      return request(app).get("/api/articles/2/comments").expect(204);
+    test("200 article_id is valid and no comments exist", () => {
+      return request(app).get("/api/articles/2/comments").expect(200);
     });
 
     test("404 article_id provided is not in database", () => {

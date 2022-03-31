@@ -61,7 +61,6 @@ exports.updateArticleId = (article_id, body) => {
 };
 
 exports.pullArticleComments = (article_id) => {
-  //return pullArticleById(article_id)
   return db
     .query(`SELECT * FROM articles WHERE article_id = $1;`, [article_id])
     .then((result) => {
@@ -80,14 +79,14 @@ exports.pullArticleComments = (article_id) => {
           [article_id]
         )
         .then((result) => {
-          if (!result.rows.length) {
-            return Promise.reject({
-              status: 204,
-              msg: "NO MESSAGE IS PASSED FOR 200+ ERRORS (NO BODY)",
-            });
-          } else {
-            return result.rows;
-          }
+          // if (!result.rows.length) {
+          //   return Promise.reject({
+          //     status: 204,
+          //     msg: "NO MESSAGE IS PASSED FOR 200+ ERRORS (NO BODY)",
+          //   });
+          // } else {
+          return result.rows;
+          //}
         });
     });
 };
