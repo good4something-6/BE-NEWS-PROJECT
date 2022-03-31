@@ -5,6 +5,7 @@ const {
   patchArticleId,
   getArticlesWithCommentCount,
   getArticleComments,
+  postArticleComments,
 } = require("./controllers/article.controllers");
 
 const { getAllUsers } = require("./controllers/users.controllers");
@@ -27,8 +28,9 @@ app.patch("/api/articles/:article_id", patchArticleId);
 
 app.get("/api/articles", getArticlesWithCommentCount);
 
-app.get("/api/users", getAllUsers);
+app.post("/api/articles/:article_id/comments", postArticleComments);
 
+app.get("/api/users", getAllUsers);
 
 app.all("/*", (req, res, next) => {
   res.status(404).send({ msg: "404 - Invalid end point" });

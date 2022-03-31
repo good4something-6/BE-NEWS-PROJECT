@@ -14,12 +14,6 @@ afterAll(() => {
   return db.end();
 });
 
-describe("Dummy test", () => {
-  test("Dummy test", () => {
-    expect("XX").toEqual("XX");
-  });
-});
-
 describe("Topics", () => {
   describe("GET: /api/topics", () => {
     const testTopics = [
@@ -210,6 +204,40 @@ describe("Articles", () => {
                 count: expect.any(Number),
               })
             );
+          });
+        });
+    });
+  });
+
+  describe.skip("POST /api/articles/:article_id/comments", () => {
+    test("404 article id provided does not exist", () => {
+      return request(app)
+        .post("/api/articles/9999/comments")
+        .send({
+          username: "lurker",
+          body: "Thats not news",
+        })
+        .expect(404)
+        .then((result) => {
+          expect(result.body.msg).toBe("404 - Article Not Found");
+        });
+    });
+    test("200 valid article id and username, comment added", () => {
+      return request(app)
+        .post("/api/articles/4/comments")
+        .send({
+          username: "lurker",
+          body: "Thats not news",
+        })
+        .expect(200)
+        .then((result) => {
+          expect(result.body).toMatchObject({
+            comment_id: expect.any(Number),
+            body: "Thats not news",
+            article_id: 4,
+            author: "lurker",
+            votes: expect.any(Number),
+            created_at: expect.any(String),
           });
         });
     });
