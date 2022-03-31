@@ -9,8 +9,8 @@ const {
 exports.getArticleById = (req, res, next) => {
   const { article_id } = req.params;
   pullArticleById(article_id)
-    .then((result) => {
-      res.status(200).send(result);
+    .then((article) => {
+      res.status(200).send({ article });
     })
     .catch((err) => {
       next(err);
@@ -21,8 +21,8 @@ exports.patchArticleId = (req, res, next) => {
   const { article_id } = req.params;
   const { body } = req;
   updateArticleId(article_id, body)
-    .then((result) => {
-      res.status(201).send(result);
+    .then((article) => {
+      res.status(201).send({ article });
     })
     .catch((err) => {
       next(err);
@@ -32,8 +32,8 @@ exports.patchArticleId = (req, res, next) => {
 exports.getArticleComments = (req, res, next) => {
   const { article_id } = req.params;
   pullArticleComments(article_id)
-    .then((result) => {
-      res.status(200).send(result);
+    .then((comments) => {
+      res.status(200).send({ comments });
     })
     .catch((err) => {
       next(err);
@@ -42,26 +42,21 @@ exports.getArticleComments = (req, res, next) => {
 
 exports.getArticlesWithCommentCount = (req, res, next) => {
   pullArticlesWithCommentCount()
-    .then((results) => {
-      res.status(200).send(results);
+    .then((articles) => {
+      res.status(200).send({ articles });
     })
     .catch(next);
 };
 
 exports.postArticleComments = (req, res, next) => {
   const { article_id } = req.params;
-  const { body } = req;
+  const { body, username } = req.body;
 
-  pullArticleById(article_id)
-    .then((results) => {
-      console.log("HERE CONTROL");
-      return pushArticleComments(article_id,body);})
-    .then((results)=>{
-      res.send(200).send(results);
+  pushArticleComments(article_id, username, body)
+    .then((restaurant) => {
+      res.status(200).send({ restaurant });
     })
     .catch((err) => {
-      console.log("HERE2 CONTROL");
       next(err);
     });
 };
-
