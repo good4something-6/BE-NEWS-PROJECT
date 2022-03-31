@@ -1,7 +1,5 @@
-const { describe, expect } = require("@jest/globals");
-const { test, beforeEach, afterAll } = require("@jest/globals");
-
 const request = require("supertest");
+require("jest-sorted");
 const { app } = require("../app");
 const db = require("../db/connection");
 
@@ -120,6 +118,15 @@ describe("Articles", () => {
           expect(result.body.msg).toBe("400 - Invalid Request");
         });
     });
+    test("404 - article id is not in database", () => {
+      return request(app)
+        .patch("/api/articles/99999")
+        .send({ inc_votes: 1 })
+        .expect(404)
+        .then((result) => {
+          expect(result.body.msg).toBe("404 - Article Not Found");
+        });
+    });
     test("200 - valid article id is provided and votes updates by 1 correctly", () => {
       return request(app)
         .patch("/api/articles/1")
@@ -136,15 +143,6 @@ describe("Articles", () => {
         .expect(201)
         .then((result) => {
           expect(result.body.votes).toBe(200);
-        });
-    });
-    test("404 - article id is not in database", () => {
-      return request(app)
-        .patch("/api/articles/99999")
-        .send({ inc_votes: 1 })
-        .expect(404)
-        .then((result) => {
-          expect(result.body.msg).toBe("404 - Article Not Found");
         });
     });
   });
@@ -181,7 +179,7 @@ describe("Articles", () => {
           expect(result.body.msg).toBe("404 - Article Not Found");
         });
     });
-    test("404 article_id provided is not valid type", () => {
+    test("400 article_id provided is not valid type", () => {
       return request(app)
         .get("/api/articles/INVALID/comments")
         .expect(400)
@@ -200,10 +198,8 @@ describe("Articles", () => {
           const articles = result.body;
           expect(Array.isArray(articles)).toBe(true);
           expect(articles).toHaveLength(12);
-          let dateStringToCompareWith = "INITIAL STRING FOR COMPARING DATES";
+          expect(articles).toBeSorted({ key: "created_at", descending: true });
           articles.forEach((article) => {
-            expect(article.created_at <= dateStringToCompareWith).toBe(true);
-            dateStringToCompareWith = article.created_at;
             expect(article).toEqual(
               expect.objectContaining({
                 author: expect.any(String),
