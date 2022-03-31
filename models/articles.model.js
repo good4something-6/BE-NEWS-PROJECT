@@ -26,7 +26,6 @@ exports.updateArticleId = (article_id, body) => {
       [article_id, body.inc_votes]
     )
     .then((result) => {
-      console.log("HERE MODEL", result.rows.length);
       if (!result.rows.length) {
         return Promise.reject({ status: 404, msg: "404 - Article Not Found" });
       } else {
