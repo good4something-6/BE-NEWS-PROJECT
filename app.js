@@ -4,9 +4,12 @@ const {
   getArticleById,
   patchArticleId,
   getArticlesWithCommentCount,
+} = require("./controllers/article.controllers");
+
+const {
   getArticleComments,
   postArticleComments,
-} = require("./controllers/article.controllers");
+} = require("./controllers/comments.controllers");
 
 const { getAllUsers } = require("./controllers/users.controllers");
 

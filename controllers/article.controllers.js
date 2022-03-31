@@ -1,18 +1,17 @@
 const {
-  pullArticleById,
+  fetchArticleById,
   updateArticleId,
-  pullArticlesWithCommentCount,
-  pullArticleComments,
-  pushArticleComments,
+  fetchArticlesWithCommentCount,
 } = require("../models/articles.model");
 
 exports.getArticleById = (req, res, next) => {
   const { article_id } = req.params;
-  pullArticleById(article_id)
+  fetchArticleById(article_id)
     .then((article) => {
       res.status(200).send({ article });
     })
     .catch((err) => {
+      console.log(err);
       next(err);
     });
 };
@@ -29,34 +28,14 @@ exports.patchArticleId = (req, res, next) => {
     });
 };
 
-exports.getArticleComments = (req, res, next) => {
-  const { article_id } = req.params;
-  pullArticleComments(article_id)
-    .then((comments) => {
-      res.status(200).send({ comments });
-    })
-    .catch((err) => {
-      next(err);
-    });
-};
-
 exports.getArticlesWithCommentCount = (req, res, next) => {
-  pullArticlesWithCommentCount()
+  fetchArticlesWithCommentCount()
     .then((articles) => {
       res.status(200).send({ articles });
     })
     .catch(next);
 };
 
-exports.postArticleComments = (req, res, next) => {
-  const { article_id } = req.params;
-  const { body, username } = req.body;
 
-  pushArticleComments(article_id, username, body)
-    .then((restaurant) => {
-      res.status(200).send({ restaurant });
-    })
-    .catch((err) => {
-      next(err);
-    });
-};
+
+

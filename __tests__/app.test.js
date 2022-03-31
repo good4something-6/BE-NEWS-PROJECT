@@ -79,6 +79,8 @@ describe("Articles", () => {
           expect(result.body.article).toHaveProperty("created_at");
           expect(result.body.article).toHaveProperty("votes");
           expect(result.body.article).toHaveProperty("article_id");
+          expect(result.body.article).toHaveProperty("comment_count");
+          expect(result.body.article.comment_count).toBe(11);
         });
     });
   });
