@@ -3,6 +3,7 @@ const {
   updateArticleId,
   pullArticlesWithCommentCount,
   pullArticleComments,
+  pushArticleComments,
 } = require("../models/articles.model");
 
 const { convertTimestampToDate } = require("../db/helpers/utils.js");
@@ -46,3 +47,21 @@ exports.getArticleComments = (req, res, next) => {
     })
     .catch(next);
 };
+
+exports.postArticleComments = (req, res, next) => {
+  const { article_id } = req.params;
+  const { body } = req;
+
+  pullArticleById(article_id)
+    .then((results) => {
+      console.log("HERE CONTROL");
+      return pushArticleComments(article_id,body);})
+    .then((results)=>{
+      res.send(200).send(results);
+    })
+    .catch((err) => {
+      console.log("HERE2 CONTROL");
+      next(err);
+    });
+};
+
