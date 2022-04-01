@@ -1,19 +1,6 @@
 const { user } = require("pg/lib/defaults");
 const db = require("../db/connection.js");
 
-exports.fetchArticleCommentsSIMPLE = (article_id) => {
-  return db
-    .query(
-      `SELECT comment_id, votes, created_at, author, body
-            FROM comments 
-            WHERE article_id = $1;`,
-      [article_id]
-    )
-    .then((result) => {
-      return result.rows;
-    });
-};
-
 exports.fetchArticleComments = (article_id) => {
   return db
     .query(`SELECT * FROM articles WHERE article_id = $1;`, [article_id])
