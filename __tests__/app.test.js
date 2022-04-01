@@ -35,7 +35,7 @@ describe("Topics", () => {
         .get("/api/topics")
         .expect(200)
         .then((results) => {
-          expect(typeof results.body.topics).toBe("object");
+          expect(results.body.topics).toBeArray();
         });
     });
     test("200: Responds with correct data", () => {
@@ -232,5 +232,16 @@ describe("Users", () => {
         );
       });
     });
+  });
+});
+
+describe("Test invalid end point", () => {
+  test("404 - invalid end point response", () => {
+    return request(app)
+      .get("/api/INVALID")
+      .expect(404)
+      .then((result) => {
+        expect(result.body.msg).toBe("404 - Invalid end point");
+      });
   });
 });
