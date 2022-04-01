@@ -31,7 +31,7 @@ exports.updateArticleId = (article_id, body) => {
     });
 };
 
-exports.pullArticlesWithCommentCount = () => {
+exports.pullArticlesWithCommentCount = (sort_by = "date") => {
   return db
     .query(
       `

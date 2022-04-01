@@ -31,11 +31,21 @@ exports.patchArticleId = (req, res, next) => {
 };
 
 exports.getArticlesWithCommentCount = (req, res, next) => {
-  pullArticlesWithCommentCount()
+  console.log("HERE");
+  // sort_by, sorts the articles by any valid column (defaults to date)
+  // order, asc or desc (defaults to descending)
+  // topic, filters by the topic value specified in the query
+  const { sort_by } = req.query;
+  console.log(sort_by);
+
+  pullArticlesWithCommentCount(sort_by)
     .then((results) => {
       res.status(200).send(results);
     })
-    .catch(next);
+    .catch((err) => {
+      console.log(err);
+      next(err);
+    });
 };
 
 exports.getArticleComments = (req, res, next) => {

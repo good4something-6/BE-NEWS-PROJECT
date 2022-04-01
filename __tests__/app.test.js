@@ -228,3 +228,28 @@ describe("Users", () => {
     });
   });
 });
+
+// sort_by, sorts the articles by any valid column (defaults to date)
+// order, asc or desc (defaults to descending)
+// topic, filters by the topic value specified in the query
+
+describe.skip("GET /api/articles with queries", () => {
+  test("200 - sortby query sorts by correct column", () => {
+    return request(app)
+      .get("/api/articles?sort_by=title")
+      .expect(200)
+      .then((result) => {
+        const { articles } = result.body;
+        expect(articles).toBeArrayOfSize(12);
+        expect(articles).toBeSorted({ key: "created_at", descending: true });
+      });
+  });
+});
+
+//  return request(app)
+//    .patch("/api/articles/1")
+//    .send({ inc_votes: 100 })
+//    .expect(201)
+//    .then((result) => {
+//      expect(result.body.votes).toBe(200);
+//    });
