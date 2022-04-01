@@ -1,17 +1,14 @@
 const {
-  pullArticleById,
+  fetchArticleById,
   updateArticleId,
-  pullArticlesWithCommentCount,
-  pullArticleComments,
+  fetchArticlesWithCommentCount,
 } = require("../models/articles.model");
-
-const { convertTimestampToDate } = require("../db/helpers/utils.js");
 
 exports.getArticleById = (req, res, next) => {
   const { article_id } = req.params;
-  pullArticleById(article_id)
-    .then((result) => {
-      res.status(200).send(result);
+  fetchArticleById(article_id)
+    .then((article) => {
+      res.status(200).send({ article });
     })
     .catch((err) => {
       next(err);
@@ -22,8 +19,8 @@ exports.patchArticleId = (req, res, next) => {
   const { article_id } = req.params;
   const { body } = req;
   updateArticleId(article_id, body)
-    .then((result) => {
-      res.status(201).send(result);
+    .then((article) => {
+      res.status(201).send({ article });
     })
     .catch((err) => {
       next(err);
@@ -31,16 +28,14 @@ exports.patchArticleId = (req, res, next) => {
 };
 
 exports.getArticlesWithCommentCount = (req, res, next) => {
-  console.log("HERE");
   // sort_by, sorts the articles by any valid column (defaults to date)
   // order, asc or desc (defaults to descending)
   // topic, filters by the topic value specified in the query
   const { sort_by } = req.query;
-  console.log("SORT", sort_by);
 
-  pullArticlesWithCommentCount(sort_by)
-    .then((results) => {
-      res.status(200).send(results);
+  fetchArticlesWithCommentCount(sort_by)
+    .then((articles) => {
+      res.status(200).send({ articles });
     })
     .catch((err) => {
       console.log("ERROR");
@@ -51,9 +46,12 @@ exports.getArticlesWithCommentCount = (req, res, next) => {
 
 exports.getArticleComments = (req, res, next) => {
   const { article_id } = req.params;
-  pullArticleComments(article_id)
-    .then((results) => {
-      res.send(200).send(results);
-    })
-    .catch(next);
+  pullArticleComments(article_id).then((results) => {
+    res.send(200).send(results);
+    fetchArticlesWithCommentCount()
+      .then((articles) => {
+        res.status(200).send({ articles });
+      })
+      .catch(next);
+  });
 };

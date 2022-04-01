@@ -1,9 +1,9 @@
-const { pullAllUsers } = require("../models/users.models");
+const { fetchAllUsers } = require("../models/users.models");
 
 exports.getAllUsers = (req, res, next) => {
-  pullAllUsers()
-    .then((result) => {
-      res.status(200).send(result);
+  fetchAllUsers()
+    .then((users) => {
+      res.status(200).send({ users });
     })
     .catch(next);
 };
