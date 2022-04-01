@@ -44,6 +44,7 @@ app.use(htmlErrorCodes);
 app.use(sqlErrorCodes);
 
 app.use((err, req, res, next) => {
+  console.log("500 ERROR", err);
   res.status(500).send({ msg: "internal server error" });
 });
 

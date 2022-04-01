@@ -28,9 +28,27 @@ exports.patchArticleId = (req, res, next) => {
 };
 
 exports.getArticlesWithCommentCount = (req, res, next) => {
-  fetchArticlesWithCommentCount()
+  // sort_by, sorts the articles by any valid column (defaults to date)
+  // order, asc or desc (defaults to descending)
+  // topic, filters by the topic value specified in the query
+  const { sort_by, order, topic } = req.query;
+  fetchArticlesWithCommentCount(sort_by, order, topic)
     .then((articles) => {
       res.status(200).send({ articles });
     })
-    .catch(next);
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.getArticleComments = (req, res, next) => {
+  const { article_id } = req.params;
+  pullArticleComments(article_id).then((results) => {
+    res.send(200).send(results);
+    fetchArticlesWithCommentCount()
+      .then((articles) => {
+        res.status(200).send({ articles });
+      })
+      .catch(next);
+  });
 };

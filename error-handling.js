@@ -7,19 +7,13 @@ exports.htmlErrorCodes = (err, req, res, next) => {
 };
 
 exports.sqlErrorCodes = (err, req, res, next) => {
-  switch (err.code) {
-    case "22P02":
+  checkError = ["22P02", "23502", "23503", "42703", "42601"].includes(err.code);
+  switch (checkError) {
+    case true:
       res.status(400).send({ msg: "400 - Invalid Request" });
       break;
-    case "23502":
-      res.status(400).send({ msg: "400 - Invalid Request" });
-      break;
-    case "23503":
-      res.status(400).send({ msg: "400 - Invalid Request" });
-      break;
+
     default:
       next(err);
   }
 };
-
-//23503

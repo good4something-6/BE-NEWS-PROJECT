@@ -301,6 +301,154 @@ describe("Users", () => {
   });
 });
 
+// sort_by, sorts the articles by any valid column (defaults to date)
+// order, asc or desc (defaults to descending)
+// topic, filters by the topic value specified in the query
+
+describe("GET /api/articles with queries", () => {
+  describe("sort", () => {
+    test("200 - sort by query sorts by correct column with no order specified", () => {
+      return request(app)
+        .get("/api/articles?sort_by=title")
+        .expect(200)
+        .then((result) => {
+          const { articles } = result.body;
+          expect(articles).toBeArrayOfSize(12);
+          expect(articles).toBeSorted({ key: "title", descending: true });
+        });
+    });
+    test("200 - sort by query sorts by correct column with order specified as ascending", () => {
+      return request(app)
+        .get("/api/articles?sort_by=title&order=asc")
+        .expect(200)
+        .then((result) => {
+          const { articles } = result.body;
+          expect(articles).toBeArrayOfSize(12);
+          expect(articles).toBeSorted({ key: "title", ascending: true });
+        });
+    });
+    test("200 - sortby query sorts by created_at when sort value is not specified", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then((result) => {
+          const { articles } = result.body;
+          expect(articles).toBeArrayOfSize(12);
+          expect(articles).toBeSorted({ key: "created_at", descending: true });
+        });
+    });
+    test("400 - requested sort_by is on invalid column", () => {
+      return request(app).get("/api/articles?sort_by=INVALID").expect(400);
+    });
+    test("400 - requested order is invalid", () => {
+      return request(app)
+        .get("/api/articles?sort_by=title&order=INVALID")
+        .expect(400);
+    });
+  });
+  describe("sort", () => {
+    test("200 - sort by query sorts by correct column with no order specified", () => {
+      return request(app)
+        .get("/api/articles?sort_by=title")
+        .expect(200)
+        .then((result) => {
+          const { articles } = result.body;
+          expect(articles).toBeArrayOfSize(12);
+          expect(articles).toBeSorted({ key: "title", descending: true });
+        });
+    });
+    test("200 - sort by query sorts by correct column with order specified as ascending", () => {
+      return request(app)
+        .get("/api/articles?sort_by=title&order=asc")
+        .expect(200)
+        .then((result) => {
+          const { articles } = result.body;
+          expect(articles).toBeArrayOfSize(12);
+          expect(articles).toBeSorted({ key: "title", ascending: true });
+        });
+    });
+    test("200 - sortby query sorts by created_at when sort value is not specified", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then((result) => {
+          const { articles } = result.body;
+          expect(articles).toBeArrayOfSize(12);
+          expect(articles).toBeSorted({ key: "created_at", descending: true });
+        });
+    });
+    test("400 - requested sort_by is on invalid column", () => {
+      return request(app).get("/api/articles?sort_by=INVALID").expect(400);
+    });
+    test("400 - requested order is invalid", () => {
+      return request(app)
+        .get("/api/articles?sort_by=title&order=INVALID")
+        .expect(400);
+    });
+  });
+  describe("sort", () => {
+    test("200 - sort by query sorts by correct column with no order specified", () => {
+      return request(app)
+        .get("/api/articles?sort_by=title")
+        .expect(200)
+        .then((result) => {
+          const { articles } = result.body;
+          expect(articles).toBeArrayOfSize(12);
+          expect(articles).toBeSorted({ key: "title", descending: true });
+        });
+    });
+    test("200 - sort by query sorts by correct column with order specified as ascending", () => {
+      return request(app)
+        .get("/api/articles?sort_by=title&order=asc")
+        .expect(200)
+        .then((result) => {
+          const { articles } = result.body;
+          expect(articles).toBeArrayOfSize(12);
+          expect(articles).toBeSorted({ key: "title", ascending: true });
+        });
+    });
+    test("200 - sortby query sorts by created_at when sort value is not specified", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then((result) => {
+          const { articles } = result.body;
+          expect(articles).toBeArrayOfSize(12);
+          expect(articles).toBeSorted({ key: "created_at", descending: true });
+        });
+    });
+    test("400 - requested sort_by is on invalid column", () => {
+      return request(app).get("/api/articles?sort_by=INVALID").expect(400);
+    });
+    test("400 - requested order is invalid", () => {
+      return request(app)
+        .get("/api/articles?sort_by=title&order=INVALID")
+        .expect(400);
+    });
+  });
+  describe("topic", () => {
+    test("200 - topic filter filters correct", () => {
+      return request(app)
+        .get("/api/articles?topic=cats")
+        .expect(200)
+        .then((result) => {
+          const { articles } = result.body;
+          expect(articles).toBeArrayOfSize(1);
+          expect(articles).toBeSorted({ key: "created_at", descending: true });
+        });
+    });
+    test("200 - topic filter string is for topic that does not exist", () => {
+      return request(app)
+        .get("/api/articles?topic=NOTEXISTS")
+        .expect(200)
+        .then((result) => {
+          const { articles } = result.body;
+          expect(articles).toBeArrayOfSize(0);
+        });
+    });
+  });
+});
+
 describe("Test invalid end point", () => {
   test("404 - invalid end point response", () => {
     return request(app)
