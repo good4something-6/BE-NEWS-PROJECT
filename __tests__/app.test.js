@@ -165,6 +165,22 @@ describe("Articles", () => {
     test("200 article_id is valid and no comments exist", () => {
       return request(app).get("/api/articles/2/comments").expect(200);
     });
+    test("404 article_id provided is not in database", () => {
+      return request(app)
+        .get("/api/articles/999/comments")
+        .expect(404)
+        .then((result) => {
+          expect(result.body.msg).toBe("404 - Article Not Found");
+        });
+    });
+    test("404 article_id provided is not valid type", () => {
+      return request(app)
+        .get("/api/articles/INVALID/comments")
+        .expect(400)
+        .then((result) => {
+          expect(result.body.msg).toBe("400 - Invalid Request");
+        });
+    });
   });
 
   describe("GET /api/articles with comment count", () => {
@@ -212,6 +228,56 @@ describe("Articles", () => {
             votes: 0,
             created_at: expect.any(String),
           });
+        });
+    });
+
+    test("400 invalid article id ", () => {
+      return request(app)
+        .post("/api/articles/9999/comments")
+        .send({
+          username: "lurker",
+          body: "Thats not news",
+        })
+        .expect(400)
+        .then((result) => {
+          expect(result.body.msg).toBe("400 - Invalid Request");
+        });
+    });
+
+    test("400 username not valid", () => {
+      return request(app)
+        .post("/api/articles/4/comments")
+        .send({
+          username: "INVALID",
+          body: "Thats not news",
+        })
+        .expect(400)
+        .then((result) => {
+          expect(result.body.msg).toBe("400 - Invalid Request");
+        });
+    });
+
+    test("400 username not in request body", () => {
+      return request(app)
+        .post("/api/articles/4/comments")
+        .send({
+          body: "Thats not news",
+        })
+        .expect(400)
+        .then((result) => {
+          expect(result.body.msg).toBe("400 - Invalid Request");
+        });
+    });
+
+    test("400 request comment body not existent", () => {
+      return request(app)
+        .post("/api/articles/4/comments")
+        .send({
+          username: "lurker",
+        })
+        .expect(400)
+        .then((result) => {
+          expect(result.body.msg).toBe("400 - Invalid Request");
         });
     });
   });

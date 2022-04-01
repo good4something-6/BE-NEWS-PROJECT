@@ -1,6 +1,7 @@
+const { user } = require("pg/lib/defaults");
 const db = require("../db/connection.js");
 
-exports.fetchArticleComments = (article_id) => {
+exports.fetchArticleCommentsSIMPLE = (article_id) => {
   return db
     .query(
       `SELECT comment_id, votes, created_at, author, body
@@ -10,6 +11,30 @@ exports.fetchArticleComments = (article_id) => {
     )
     .then((result) => {
       return result.rows;
+    });
+};
+
+exports.fetchArticleComments = (article_id) => {
+  return db
+    .query(`SELECT * FROM articles WHERE article_id = $1;`, [article_id])
+    .then((result) => {
+      if (!result.rows.length) {
+        return Promise.reject({ status: 404, msg: "404 - Article Not Found" });
+      } else {
+        return result.rows[0];
+      }
+    })
+    .then((result) => {
+      return db
+        .query(
+          `SELECT comment_id, votes, created_at, author, body
+            FROM comments 
+            WHERE article_id = $1;`,
+          [article_id]
+        )
+        .then((result) => {
+          return result.rows;
+        });
     });
 };
 
