@@ -34,10 +34,12 @@ exports.fetchArticleById = (article_id) => {
     });
 };
 
-exports.fetchArticlesWithCommentCount = () => {
-  return db
-    .query(
-      `
+exports.fetchArticlesWithCommentCount = (
+  sort_by = "created_at",
+  order = "desc",
+  topic = "%"
+) => {
+  let queryString = `
       SELECT 
       articles.author, 
       articles.title, 
@@ -48,18 +50,14 @@ exports.fetchArticlesWithCommentCount = () => {
       CAST(COUNT( comments.article_id ) AS INT)
       FROM articles LEFT JOIN comments 
       ON comments.article_id = articles.article_id
+      WHERE topic LIKE '${topic}'
       GROUP BY 
       articles.article_id
-      ORDER BY articles.created_at DESC
-      `
-      //      ORDER BY articles.${sort_by} ${desc};
-      //     `
-      //      ,
-      //      [sort_by, order]
-    )
-    .then((result) => {
-      return result.rows;
-    });
+      ORDER BY articles.${sort_by} ${order};
+      `;
+  return db.query(queryString).then((result) => {
+    return result.rows;
+  });
 };
 
 exports.updateArticleId = (article_id, body) => {

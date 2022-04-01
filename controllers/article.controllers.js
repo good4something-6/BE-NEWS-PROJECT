@@ -31,15 +31,12 @@ exports.getArticlesWithCommentCount = (req, res, next) => {
   // sort_by, sorts the articles by any valid column (defaults to date)
   // order, asc or desc (defaults to descending)
   // topic, filters by the topic value specified in the query
-  const { sort_by } = req.query;
-
-  fetchArticlesWithCommentCount(sort_by)
+  const { sort_by, order, topic } = req.query;
+  fetchArticlesWithCommentCount(sort_by, order, topic)
     .then((articles) => {
       res.status(200).send({ articles });
     })
     .catch((err) => {
-      console.log("ERROR");
-      console.log(err);
       next(err);
     });
 };
