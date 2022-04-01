@@ -28,9 +28,6 @@ exports.patchArticleId = (req, res, next) => {
 };
 
 exports.getArticlesWithCommentCount = (req, res, next) => {
-  // sort_by, sorts the articles by any valid column (defaults to date)
-  // order, asc or desc (defaults to descending)
-  // topic, filters by the topic value specified in the query
   const { sort_by, order, topic } = req.query;
   fetchArticlesWithCommentCount(sort_by, order, topic)
     .then((articles) => {

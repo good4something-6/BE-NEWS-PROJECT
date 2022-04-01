@@ -301,10 +301,6 @@ describe("Users", () => {
   });
 });
 
-// sort_by, sorts the articles by any valid column (defaults to date)
-// order, asc or desc (defaults to descending)
-// topic, filters by the topic value specified in the query
-
 describe("GET /api/articles with queries", () => {
   describe("sort", () => {
     test("200 - sort by query sorts by correct column with no order specified", () => {
