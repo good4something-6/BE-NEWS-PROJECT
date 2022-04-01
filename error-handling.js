@@ -14,7 +14,12 @@ exports.sqlErrorCodes = (err, req, res, next) => {
     case "23502":
       res.status(400).send({ msg: "400 - Invalid Request" });
       break;
+    case "23503":
+      res.status(400).send({ msg: "400 - Invalid Request" });
+      break;
     default:
       next(err);
   }
 };
+
+//23503
