@@ -36,13 +36,14 @@ exports.getArticlesWithCommentCount = (req, res, next) => {
   // order, asc or desc (defaults to descending)
   // topic, filters by the topic value specified in the query
   const { sort_by } = req.query;
-  console.log(sort_by);
+  console.log("SORT", sort_by);
 
   pullArticlesWithCommentCount(sort_by)
     .then((results) => {
       res.status(200).send(results);
     })
     .catch((err) => {
+      console.log("ERROR");
       console.log(err);
       next(err);
     });

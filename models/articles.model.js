@@ -31,7 +31,34 @@ exports.updateArticleId = (article_id, body) => {
     });
 };
 
-exports.pullArticlesWithCommentCount = (sort_by = "date") => {
+exports.pullArticlesWithCommentCount = (
+  sort_by = "created_at",
+  order = "desc"
+) => {
+  console.log("MODEL", sort_by, order);
+  console.log("SQL");
+  console.log(
+    `
+      SELECT 
+      "articles"."author", 
+      "articles"."title", 
+      "articles"."article_id", 
+      "articles"."topic", 
+      "articles"."created_at", 
+      "articles"."votes", 
+      CAST(COUNT( "comments"."article_id" ) AS INT)
+      FROM "articles" LEFT JOIN "comments" 
+      ON "comments"."article_id" = "articles"."article_id" 
+      GROUP BY 
+      "articles"."author", 
+      "articles"."title", 
+      "articles"."article_id", 
+      "articles"."topic", 
+      "articles"."created_at", 
+      "articles"."votes"
+      ORDER BY articles.created_at desc;
+      `
+  );
   return db
     .query(
       `
@@ -52,8 +79,12 @@ exports.pullArticlesWithCommentCount = (sort_by = "date") => {
       "articles"."topic", 
       "articles"."created_at", 
       "articles"."votes"
-      ORDER BY articles.created_at DESC
+      ORDER BY articles.created_at desc;
       `
+      //      ORDER BY articles.${sort_by} ${desc};
+      //     `
+      //      ,
+      //      [sort_by, order]
     )
     .then((result) => {
       return result.rows;
