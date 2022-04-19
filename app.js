@@ -24,19 +24,12 @@ app.use(cors());
 app.use(express.json());
 
 app.get("/api/topics", getTopics);
-
 app.get("/api/articles/:article_id/comments", getArticleComments);
-
 app.get("/api/articles/:article_id", getArticleById);
-
 app.patch("/api/articles/:article_id", patchArticleId);
-
 app.get("/api/articles", getArticlesWithCommentCount);
-
 app.post("/api/articles/:article_id/comments", postArticleComments);
-
 app.get("/api/users", getAllUsers);
-
 app.all("/*", (req, res, next) => {
   res.status(404).send({ msg: "404 - Invalid end point" });
 });
