@@ -1,7 +1,3 @@
-# Trello Board for project
-
-https://trello.com/b/vg4Y825J/be-news-project
-
 # Northcoders News API
 
 ## Background
