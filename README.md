@@ -37,13 +37,6 @@ The (empty) databases are created from scratch by running the npm script as foll
 The test database is populated either manually or as part of the jest testing process
 
 ```bash
---------------------
-Development database
---------------------
-    ??????????????????????
-```
-
-```bash
 -------------
 Test database - manual
 -------------
