@@ -56,3 +56,9 @@ Test database - jest testing
 -------------
     npm test
 ```
+
+## Launching the back-end server
+
+```bash
+    npm start
+```
