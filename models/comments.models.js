@@ -41,3 +41,14 @@ exports.sendArticleComments = (article_id, username, body) => {
       return results.rows[0];
     });
 };
+
+exports.removeArticleComment = (comment_id) => {
+  return db.query(
+    `
+   DELETE FROM comments
+   WHERE comment_id = $1
+   RETURNING comment_id
+   `,
+    [comment_id]
+  );
+};

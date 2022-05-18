@@ -183,33 +183,6 @@ describe("Articles", () => {
     });
   });
 
-  describe("GET /api/articles with comment count", () => {
-    test("200 - returns array of articles objects in descending date order", () => {
-      return request(app)
-        .get("/api/articles")
-        .expect(200)
-        .then((result) => {
-          const { articles } = result.body;
-          expect(Array.isArray(articles)).toBe(true);
-          expect(articles).toHaveLength(12);
-          expect(articles).toBeSorted({ key: "created_at", descending: true });
-          articles.forEach((article) => {
-            expect(article).toEqual(
-              expect.objectContaining({
-                author: expect.any(String),
-                title: expect.any(String),
-                article_id: expect.any(Number),
-                topic: expect.any(String),
-                created_at: expect.any(String),
-                votes: expect.any(Number),
-                count: expect.any(Number),
-              })
-            );
-          });
-        });
-    });
-  });
-
   describe("POST /api/articles/:article_id/comments", () => {
     test("200 valid article id and username, comment added", () => {
       return request(app)
@@ -220,7 +193,7 @@ describe("Articles", () => {
         })
         .expect(200)
         .then((result) => {
-          expect(result.body.restaurant).toMatchObject({
+          expect(result.body.commentPosted).toMatchObject({
             comment_id: 19,
             body: "Thats not news",
             article_id: 4,
@@ -275,6 +248,68 @@ describe("Articles", () => {
         .send({
           username: "lurker",
         })
+        .expect(400)
+        .then((result) => {
+          expect(result.body.msg).toBe("400 - Invalid Request");
+        });
+    });
+  });
+
+  describe("GET /api/articles with comment count", () => {
+    test("200 - returns array of articles objects in descending date order", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then((result) => {
+          const { articles } = result.body;
+          expect(Array.isArray(articles)).toBe(true);
+          expect(articles).toHaveLength(12);
+          expect(articles).toBeSorted({
+            key: "created_at",
+            descending: true,
+          });
+          articles.forEach((article) => {
+            expect(article).toEqual(
+              expect.objectContaining({
+                author: expect.any(String),
+                title: expect.any(String),
+                article_id: expect.any(Number),
+                topic: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                count: expect.any(Number),
+              })
+            );
+          });
+        });
+    });
+  });
+});
+
+describe("DELETE /api/comments/:comment_id", () => {
+  describe("204 delete a comment from database", () => {
+    test("204 delete a comment from the database then check it is not in the database", () => {
+      return request(app)
+        .delete(`/api/comments/14`)
+        .expect(204)
+        .then((result) => {
+          return request(app)
+            .get("/api/articles/5/comments")
+            .expect(200)
+            .then((results) => {
+              let filteredResults = results.body.comments.filter((ele) => {
+                return ele.comment_id === 14;
+              });
+              expect(filteredResults.length).toBe(0);
+            });
+        });
+    });
+  });
+
+  describe("Deleting a non-existent comment from database", () => {
+    test("400 delete invalid comment id", () => {
+      return request(app)
+        .delete("/api/comments/33333333")
         .expect(400)
         .then((result) => {
           expect(result.body.msg).toBe("400 - Invalid Request");

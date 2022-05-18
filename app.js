@@ -10,6 +10,7 @@ const {
 const {
   getArticleComments,
   postArticleComments,
+  deleteArticleComment,
 } = require("./controllers/comments.controllers");
 
 const { getAllUsers } = require("./controllers/users.controllers");
@@ -29,6 +30,7 @@ app.get("/api/articles/:article_id", getArticleById);
 app.patch("/api/articles/:article_id", patchArticleId);
 app.get("/api/articles", getArticlesWithCommentCount);
 app.post("/api/articles/:article_id/comments", postArticleComments);
+app.delete("/api/comments/:comment_id", deleteArticleComment);
 app.get("/api/users", getAllUsers);
 app.all("/*", (req, res, next) => {
   res.status(404).send({ msg: "404 - Invalid end point" });
